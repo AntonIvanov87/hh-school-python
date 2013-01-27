@@ -21,13 +21,10 @@ def ireduce(func, iterable, init=None):
 
 if __name__ == '__main__':
 
-	print 'ireduce(add, [1, 2, 3]):'
-	l = [1, 2, 3]
-	for i in ireduce(lambda a, b: a+b, l):
-		print i
+	iterator = ireduce(lambda x, y: x+y, [1, 2, 3])
+	assert next(iterator) == 3
+	assert next(iterator) == 6
 
-	print
-	print 'ireduce(add, ["a", "b", "c"])'
-	l = ['a', 'b', 'c']
-	for i in ireduce(lambda a, b: a+b, l):
-		print i
+	iterator = ireduce(lambda x, y: x+y, ['a', 'b', 'c'])
+	assert next(iterator) == 'ab'
+	assert next(iterator) == 'abc'

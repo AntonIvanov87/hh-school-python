@@ -3,23 +3,17 @@
 """Almost range, but lazy: generates next number only when needed"""
 class xrange(object):
 
-	# TODO: docstring 
-	def __init__(self, *args):
+	def __init__(self, startStop, stop=None, step=1):
 
-		if len(args) == 1:
-			self.__init__(*(0, args[0]))
-		
-		elif len(args) == 2:
-			step = 1 if args[0] <= args[1] else -1
-			self.__init__(*(args[0], args[1], step))
-
-		elif len(args) == 3:
-			self.start = args[0]
-			self.stop = args[1]
-			self.step = args[2]
+		if stop is None:
+			self.start = 0
+			self.stop = startStop
 
 		else:
-			raise TypeError('Invalid number of args!')
+			self.start = startStop
+			self.stop = stop
+
+		self.step = step
 	
 
 	def __iter__(self):
@@ -43,11 +37,11 @@ class xrange(object):
 
 	def __len__(self):
 
-		diff = self.stop - self.start
+		diff = abs(self.stop - self.start)
 		if diff % self.step == 0:
-			return diff / self.step
+			return diff / abs(self.step)
 		else:
-			return 1 + diff / self.step
+			return 1 + diff / abs(self.step)
 
 
 	# TODO: slice
@@ -120,47 +114,37 @@ class xrange(object):
 
 if __name__ == '__main__':
 
-	def demonstrate(expression):
-		print expression + ':', eval(expression)
-
-	print 'contents:'
-	demonstrate('xrange(3)')
-	demonstrate('xrange(1,3)')
-	demonstrate('xrange(1,6,2)')
-	demonstrate('xrange(-3)')
-	demonstrate('xrange(1,-3)')
-	demonstrate('xrange(1,-6,-2)')
-
-	print
-	print 'len:'
-	demonstrate('len(xrange(1,6,2))')
-	demonstrate('len(xrange(1,-6,-2))')
+	assert len(xrange(3)) == 3
+	assert len(xrange(1,3)) == 2
+	assert len(xrange(1, 6, 2)) == 3
+	assert len(xrange(-3)) == 3
+	assert len(xrange(1, -3)) == 4
+	assert len(xrange(1, -6, -2)) == 4
 	
-	print
-	print 'indices:'
-	demonstrate('xrange(1,6,2)[1]')
-	demonstrate('xrange(1,6,2)[2]')
-	demonstrate('xrange(1,6,2)[-1]')
-	demonstrate('xrange(1,6,2)[-2]')
-	demonstrate('xrange(1,-6,-2)[1]')
-	demonstrate('xrange(1,-6,-2)[-1]')
+	assert xrange(3)[0] == 0
+	assert xrange(3)[-1] == 2
+	assert xrange(1, 3)[0] == 1
+	assert xrange(1, 3)[-1] == 2
+	assert xrange(1, 6, 2)[0] == 1
+	assert xrange(1, 6, 2)[1] == 3
+	assert xrange(1, 6, 2)[2] == 5
+	assert xrange(1, 6, 2)[-1] == 5
+	assert xrange(1, 6, 2)[-2] == 3
+	assert xrange(1, -6, -2)[1] == -1
+	assert xrange(1, -6, -2)[-1] == -5
 
-	print 
-	print 'in:'
-	demonstrate('0 in xrange(1,6,2)')
-	demonstrate('1 in xrange(1,6,2)')
-	demonstrate('2 in xrange(1,6,2)')
-	demonstrate('6 in xrange(1,6,2)')
-	demonstrate('0 in xrange(1,-6,-2)')
-	demonstrate('-1 in xrange(1,-6,-2)')
+	assert 0 not in xrange(1, 6, 2)
+	assert 1 in xrange(1, 6, 2)
+	assert 2 not in xrange(1, 6, 2)
+	assert 6 not in xrange(1, 6, 2)
+	assert 0 not in xrange(1, -6, -2)
+	assert -1 in xrange(1, -6, -2)
 
-	print
-	print 'slices:'
-	demonstrate('xrange(1, 6, 2)[1:]')
-	demonstrate('xrange(1, 6, 2)[:2]')
-	demonstrate('xrange(1, 6, 2)[::-1]')
-	demonstrate('xrange(1, 6, 2)[2:0:-1]')
-	demonstrate('xrange(1, -6, -2)[1:]')
-	demonstrate('xrange(1, -6, -2)[:2]')
-	demonstrate('xrange(1, -6, -2)[::-1]')
-	demonstrate('xrange(1, -6, -2)[2:0:-1]')
+	assert xrange(1, 6, 2)[1:][0] == 3
+	assert xrange(1, 6, 2)[1:][-1] == 5
+	assert xrange(1, 6, 2)[:2][0] == 1
+	assert xrange(1, 6, 2)[:2][-1] == 3
+	assert xrange(1, 6, 2)[::-1][0] == 5
+	assert xrange(1, 6, 2)[::-1][-1] == 1
+	assert xrange(1, 6, 2)[2:0:-1][0] == 5
+	assert xrange(1, 6, 2)[2:0:-1][-1] == 3

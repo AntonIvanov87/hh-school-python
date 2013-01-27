@@ -3,7 +3,7 @@
 """Decorator that makes function possible to curry"""
 class curry:
 	
-	def __init__(self, func, prevPargs=(), prevKargs={}):
+	def __init__(self, func, prevPargs=None, prevKargs=None):
 
 		self.func = func
 		func_code = func.func_code
@@ -12,8 +12,8 @@ class curry:
 		funcMandatoryArgCount = func_code.co_argcount - funcDefArgCount
 		self.funcMandatoryArgs = func_code.co_varnames[:funcMandatoryArgCount]
 
-		self.prevPargs = prevPargs
-		self.prevKargs = prevKargs
+		self.prevPargs = () if prevPargs is None else prevPargs
+		self.prevKargs = {} if prevKargs is None else prevKargs
 
 
 	def __call__(self, *pargs, **kargs):
@@ -50,36 +50,14 @@ if __name__ == '__main__':
 	def add(arg1, arg2):
 		return arg1 + arg2
 
-	print 'Calling result = add(1,2)'
-	result = add(1,2)
-	print 'result =', result
-
-	print 'Calling add1 = add(1)'
 	add1 = add(1)
-	print 'add1 =', add1
-
-	print 'Calling result = add1(2)'
-	result = add1(2)
-	print 'result = ', result
-
-	print 'Calling result = add1(4)'
-	result = add1(4)
-	print 'result = ', result
+	assert add1(2) == 3
+	assert add1(4) == 5
 
 	@curry
 	def func(a, b, c=3, d=4, *pargs, **kargs):
-		print a, b, c, d, pargs, kargs
+		return (a, b, c, d, pargs, kargs)
 
-	print
-	print 'Calling func(1, 2, 3, 4, 5, x=6)'
-	func(1, 2, 3, 4, 5, x=6)
-
-	print 'Calling func1 = func(1)'
 	func1 = func(1)
-	print 'func1 =', func1
-
-	print 'Calling func1(2, 3, 4, 5, x=6)'
-	func1(2, 3, 4, 5, x=6)
-
-	print 'Calling func1(2)'
-	func1(2)
+	assert func1(2, 3, 4, 5, x=6) == (1, 2, 3, 4, (5,), {'x': 6})
+	assert func1(2) == (1, 2, 3, 4, (), {})

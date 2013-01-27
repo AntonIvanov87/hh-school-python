@@ -17,6 +17,12 @@ class InfixOperator:
 """Service class that supports InfixOperator"""
 class InfixOperatorWithLeftArg:
 
+	# Decided to make separate class to stress that
+	# InfixOperator can only __ror__, and does not need leftArg
+	# InfixOperatorWithLeftArg can only __or__, and always need leftArg
+	# We can make checks and throw exceptions, but in my opinion it is not a better solution
+	# Besides our classes are "immutable": they do not change their state inside methods
+
 	def __init__(self, func, leftArg):
 
 		self.func = func
@@ -30,13 +36,8 @@ class InfixOperatorWithLeftArg:
 
 if __name__ == '__main__':
 
-	def demonstrate(expression):
-
-		print expression +':', eval(expression)
-
-
 	add = InfixOperator(lambda x, y: x + y)
-	demonstrate('5 |add| 6')
+	assert 5 |add| 6 == 11
 
 	decart = InfixOperator(lambda iter1, iter2: [(x, y) for x in iter1 for y in iter2])
-	demonstrate('[1, 2, 3] |decart| [4, 5, 6]')
+	assert [1, 2, 3] |decart| [4, 5, 6]

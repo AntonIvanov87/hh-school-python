@@ -14,4 +14,5 @@ def eratosthenes(max):
 if __name__ == '__main__':
 
 	primes = eratosthenes(20)
-	print primes
+	assert primes[0] == 2
+	assert primes[7] == 19
