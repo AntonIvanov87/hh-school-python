@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
-"""Decorator that makes function possible to curry"""
 class curry:
+	"""
+	Decorator that makes function possible to curry.
+	"""
 	
 	def __init__(self, func, prevPargs=None, prevKargs=None):
 

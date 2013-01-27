@@ -1,10 +1,14 @@
 #!/usr/bin/python
 
-"""Allows to simulate infix operators"""
 class InfixOperator:
+	"""
+	Allows to simulate infix operators.
+	"""
 
-	"""func - function to be called on two arguments"""
 	def __init__(self, func):
+		"""
+		func - function to be called on two arguments.
+		"""
 
 		self.func = func
 
@@ -14,8 +18,10 @@ class InfixOperator:
 		return InfixOperatorWithLeftArg(self.func, other)
 
 
-"""Service class that supports InfixOperator"""
 class InfixOperatorWithLeftArg:
+	"""
+	Service class that supports InfixOperator.
+	"""
 
 	# Decided to make separate class to stress that
 	# InfixOperator can only __ror__, and does not need leftArg

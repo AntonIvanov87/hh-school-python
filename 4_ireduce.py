@@ -1,8 +1,10 @@
 #!/usr/bin/python
 
-"""As reduce but yields a number on each reduce iterations.
-Can be useful for example to show modification of some indicator during reduce process."""
 def ireduce(func, iterable, init=None):
+	"""
+	As reduce but yields a number on each reduce iterations.
+	Can be useful for example to show modification of some indicator during reduce process.
+	"""
 
 	iterator = iter(iterable)
 	

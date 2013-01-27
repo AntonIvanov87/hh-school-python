@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
-"""Almost range, but lazy: generates next number only when needed"""
 class xrange(object):
+	"""
+	Almost range, but lazy: generates next number only when needed.
+	"""
 
 	def __init__(self, startStop, stop=None, step=1):
 
@@ -44,7 +46,6 @@ class xrange(object):
 			return 1 + diff / abs(self.step)
 
 
-	# TODO: slice
 	def __getitem__(self, indexOrSliceObject):
 
 		# we can implement __getslice__ but it is not supported in future python vertions
