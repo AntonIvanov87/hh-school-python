@@ -18,26 +18,18 @@ def lazy(decorator):
 
 if __name__ == '__main__':
 
-	def someNormalDecorator(decoratee):
-		print 'In some normal decorator'
-		return decoratee
-
-	@someNormalDecorator
-	def someNormalDecoratee():
-		print 'In some normal decoratee'
+	decoratorWasCalled = False
 
 	@lazy
 	def someLazyDecorator(decoratee):
-		print 'In some lazy decorator'
+		global decoratorWasCalled
+		decoratorWasCalled = True
 		return decoratee
 
 	@someLazyDecorator
 	def someLazyDecoratee():
-		print 'In some lazy decoratee'
+		pass
 
-	print 'Calling some normal decoratee'
-	someNormalDecoratee()
-
-	print
-	print 'Calling some lazy decoratee'
+	assert decoratorWasCalled == False
 	someLazyDecoratee()
+	assert decoratorWasCalled == True
