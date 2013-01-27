@@ -1,13 +1,17 @@
 #!/usr/bin/python
 
+import functools
+
 """Decorator that makes other decorators lazy.
 Can be useful if decorator uses some global var:
 lazy decorator will use the value of the global var on call time, not on compile time.
 Do not support decorators with args yet."""
 def lazy(decorator):
 
+	@functools.wraps(decorator)
 	def lazyDecorator(decoratee):
 		
+		@functools.wraps(decoratee)
 		def lazyDecoratee(*args, **kargs):
 			return decorator(decoratee)(*args, **kargs)
 
