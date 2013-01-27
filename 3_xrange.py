@@ -22,17 +22,8 @@ class xrange(object):
 
 		def iterFunc():
 			
-			if self.step > 0:
-				def continueLoop(i):
-					return i < self.stop
-			else:
-				def continueLoop(i):
-					return i > self.stop
-			
-			i = self.start
-			while continueLoop(i):
+			for i in range(self.start, self.stop, self.step):
 				yield i
-				i += self.step
 
 		return iterFunc()
 
@@ -106,11 +97,7 @@ class xrange(object):
 
 	def __str__(self):
 
-		s = 'xrange(' + str(self.start) + ',' + str(self.stop) + ',' + str(self.step) + '):'
-		# it's no good to print all elements, but for learning and testing purposes - it's ok
-		for i in self:
-			s += ' ' + str(i)
-		return s
+		return 'xrange(' + str(self.start) + ',' + str(self.stop) + ',' + str(self.step) + ')'
 
 
 if __name__ == '__main__':
