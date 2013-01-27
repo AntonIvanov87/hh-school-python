@@ -1,10 +1,13 @@
 #!/usr/bin/python
 
+"""Decorator that makes other decorators lazy.
+Can be useful if decorator uses some global var:
+lazy decorator will use the value of the global var on call time, not on compile time.
+Do not support decorators with args yet."""
 def lazy(decorator):
 
 	def lazyDecorator(decoratee):
 		
-		# TODO: check how kargs work
 		def lazyDecoratee(*args, **kargs):
 			return decorator(decoratee)(*args, **kargs)
 

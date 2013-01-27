@@ -6,15 +6,7 @@ def eratosthenes(max):
 
 	def filterPrimes(numbers):
 
-		if len(numbers) == 1:
-			return numbers
-
-		prime = numbers[0]
-		rest = numbers[1:]
-		filteredRest = filter(lambda i: i%prime != 0, rest)
-
-		return [prime] + filterPrimes(filteredRest)
-
+		return numbers if len(numbers) == 1 else [numbers[0]] + filterPrimes(filter(lambda i: i%numbers[0] != 0, numbers[1:]))
 
 	return filterPrimes(numbers)
 
