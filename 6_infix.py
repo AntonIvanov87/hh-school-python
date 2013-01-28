@@ -46,4 +46,8 @@ if __name__ == '__main__':
 	assert 5 |add| 6 == 11
 
 	decart = InfixOperator(lambda iter1, iter2: [(x, y) for x in iter1 for y in iter2])
-	assert [1, 2, 3] |decart| [4, 5, 6]
+	l1 = [1, 2, 3]
+	l2 = [4, 5, 6]
+	decarted_by_infix = set(l1 |decart| l2)
+	decarted_manually = set([(x, y) for x in l1 for y in l2])
+	assert decarted_by_infix == decarted_manually
