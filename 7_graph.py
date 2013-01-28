@@ -6,6 +6,7 @@ def simple_compile(graph):
 	The compute_all accepts a map of input parameters
 	and returns a map of all parameters that can be computed according go graph.
 	Graph - a map from function_name to function.
+	Each function parameter name must match the name of function that computes this param.
 	"""
 
 	def compute_all(input_map):
