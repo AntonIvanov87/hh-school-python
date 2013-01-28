@@ -1,45 +1,46 @@
 #!/usr/bin/python
 
-class curry:
+class Curry:
 	"""
 	Decorator that makes function possible to curry.
+	Does not support decorating class methods yet.
 	"""
 	
-	def __init__(self, func, prevPargs=None, prevKargs=None):
+	def __init__(self, func, prev_pargs=None, prev_kargs=None):
 
 		self.func = func
 		func_code = func.func_code
 
-		funcDefArgCount = 0 if func.func_defaults is None else len(func.func_defaults)
-		funcMandatoryArgCount = func_code.co_argcount - funcDefArgCount
-		self.funcMandatoryArgs = func_code.co_varnames[:funcMandatoryArgCount]
+		func_def_arg_count = 0 if func.func_defaults is None else len(func.func_defaults)
+		func_mandatory_arg_count = func_code.co_argcount - func_def_arg_count
+		self.func_mandatory_args = func_code.co_varnames[:func_mandatory_arg_count]
 
-		self.prevPargs = () if prevPargs is None else prevPargs
-		self.prevKargs = {} if prevKargs is None else prevKargs
+		self.prev_pargs = () if prev_pargs is None else prev_pargs
+		self.prev_kargs = {} if prev_kargs is None else prev_kargs
 
 
 	def __call__(self, *pargs, **kargs):
 
-		allPargs = self.prevPargs + pargs
-		allKargs = self.prevKargs.copy()
-		allKargs.update(kargs)
+		all_pargs = self.prev_pargs + pargs
+		all_kargs = self.prev_kargs.copy()
+		all_kargs.update(kargs)
 
-		if self.canBeCalled(allPargs, allKargs):
-			return self.func(*allPargs, **allKargs)
+		if self.can_be_called(all_pargs, all_kargs):
+			return self.func(*all_pargs, **all_kargs)
 		else:
-			return curry(self.func, allPargs, allKargs)
+			return Curry(self.func, all_pargs, all_kargs)
 
 
-	def canBeCalled(self, allPargs, allKargs):
+	def can_be_called(self, all_pargs, all_kargs):
 
 		# If there are enough positional args passed - the function can be called
-		if len(allPargs) >= len(self.funcMandatoryArgs):
+		if len(all_pargs) >= len(self.func_mandatory_args):
 			return True
 
 		# If other mandatory args are in kargs - the function can be called
-		mandatoryArgsMaybeInKargs = self.funcMandatoryArgs[len(allPargs):]
-		for mandatoryArg in mandatoryArgsMaybeInKargs:
-			if mandatoryArg not in allKargs:
+		mandatory_args_maybe_in_kargs = self.func_mandatory_args[len(all_pargs):]
+		for mandatoryArg in mandatory_args_maybe_in_kargs:
+			if mandatoryArg not in all_kargs:
 				return False
 
 		# Not enough args
@@ -48,7 +49,7 @@ class curry:
 
 if __name__ == '__main__':
 
-	@curry
+	@Curry
 	def add(arg1, arg2):
 		return arg1 + arg2
 
@@ -56,7 +57,7 @@ if __name__ == '__main__':
 	assert add1(2) == 3
 	assert add1(4) == 5
 
-	@curry
+	@Curry
 	def func(a, b, c=3, d=4, *pargs, **kargs):
 		return (a, b, c, d, pargs, kargs)
 

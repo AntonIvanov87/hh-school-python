@@ -11,31 +11,31 @@ def lazy(decorator):
 	"""
 
 	@functools.wraps(decorator)
-	def lazyDecorator(decoratee):
+	def lazy_decorator(decoratee):
 		
 		@functools.wraps(decoratee)
-		def lazyDecoratee(*args, **kargs):
+		def lazy_decoratee(*args, **kargs):
 			return decorator(decoratee)(*args, **kargs)
 
-		return lazyDecoratee
+		return lazy_decoratee
 
-	return lazyDecorator
+	return lazy_decorator
 
 
 if __name__ == '__main__':
 
-	decoratorWasCalled = False
+	decorator_was_called = False
 
 	@lazy
-	def someLazyDecorator(decoratee):
-		global decoratorWasCalled
-		decoratorWasCalled = True
+	def some_lazy_decorator(decoratee):
+		global decorator_was_called
+		decorator_was_called = True
 		return decoratee
 
-	@someLazyDecorator
-	def someLazyDecoratee():
+	@some_lazy_decorator
+	def some_lazy_decoratee():
 		pass
 
-	assert decoratorWasCalled == False
-	someLazyDecoratee()
-	assert decoratorWasCalled == True
+	assert decorator_was_called == False
+	some_lazy_decoratee()
+	assert decorator_was_called == True

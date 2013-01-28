@@ -12,6 +12,7 @@ def ireduce(func, iterable, init=None):
 		try:
 			init = next(iterator)
 		except StopIteration:
+			# Like in reduce - we raise exception
 			raise TypeError('Empty iterable and no init value!')
 	
 	acc = init

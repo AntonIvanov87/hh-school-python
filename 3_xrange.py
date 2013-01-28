@@ -5,14 +5,14 @@ class xrange(object):
 	Almost range, but lazy: generates next number only when needed.
 	"""
 
-	def __init__(self, startStop, stop=None, step=1):
+	def __init__(self, start_stop, stop=None, step=1):
 
 		if stop is None:
 			self.start = 0
-			self.stop = startStop
+			self.stop = start_stop
 
 		else:
-			self.start = startStop
+			self.start = start_stop
 			self.stop = stop
 
 		self.step = step
@@ -20,12 +20,14 @@ class xrange(object):
 
 	def __iter__(self):
 
-		def iterFunc():
+		def iter_func():
 			
-			for i in range(self.start, self.stop, self.step):
+			i = self.start
+			while i < self.stop if self.step >=0 else i > self.stop:
 				yield i
+				i += self.step
 
-		return iterFunc()
+		return iter_func()
 
 
 	def __len__(self):
@@ -37,35 +39,35 @@ class xrange(object):
 			return 1 + diff / abs(self.step)
 
 
-	def __getitem__(self, indexOrSliceObject):
+	def __getitem__(self, index_or_slice):
 
 		# we can implement __getslice__ but it is not supported in future python vertions
-		def getBySlice(sliceObject):
+		def get_by_slice(slice_object):
 
 			# we are not fully comply with slice protocol
 			# in slice we can choose out of range index
 			# but I consider it as an error rather that a feature
 
 			# step
-			stepIndex = 1 if sliceObject.step == None else sliceObject.step
-			step = self.step * stepIndex
+			step_index = 1 if slice_object.step == None else slice_object.step
+			step = self.step * step_index
 
 			# start
-			if sliceObject.start == None:
-				start = self.start if stepIndex >= 0 else self[len(self)-1]
+			if slice_object.start == None:
+				start = self.start if step_index >= 0 else self[len(self)-1]
 			else:
-				start = self[sliceObject.start]
+				start = self[slice_object.start]
 
 			# stop
-			if sliceObject.stop == None:
-				stop = self.stop if stepIndex >= 0 else self.start + step
+			if slice_object.stop == None:
+				stop = self.stop if step_index >= 0 else self.start + step
 			else:
-				stop = self[sliceObject.stop]
+				stop = self[slice_object.stop]
 
 			return xrange(start, stop, step)
 
 
-		def getByIndex(index):
+		def get_by_index(index):
 
 			l = len(self)
 			if index >= l or index <= -l:
@@ -76,7 +78,7 @@ class xrange(object):
 			else:
 				return self.start + (l+index)*self.step
 
-		return getBySlice(indexOrSliceObject) if isinstance(indexOrSliceObject, slice) else getByIndex(indexOrSliceObject)
+		return get_by_slice(index_or_slice) if isinstance(index_or_slice, slice) else get_by_index(index_or_slice)
 		
 
 	def __contains__(self, what):
