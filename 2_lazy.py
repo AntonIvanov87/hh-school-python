@@ -2,12 +2,17 @@
 
 import functools
 
+# fixed all issues:
+# tests
+# repr
+# codestyle
+
 def lazy(decorator):
 	"""
 	Decorator that makes other decorators lazy.
+	Supports decorators without args.
 	Can be useful if decorator uses some global var:
 	lazy decorator will use the value of the global var on call time, not on compile time.
-	Do not support decorators with args yet.
 	"""
 
 	@functools.wraps(decorator)
