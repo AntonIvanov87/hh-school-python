@@ -1,14 +1,31 @@
 #!/usr/bin/python
 
+# fixed all issues:
+# tests
+# codestyle
+# func.__name__, func.__doc__, func.__str__
+
 class Curry:
 	"""
 	Decorator that makes function possible to curry.
-	Does not support decorating class methods yet.
+	For example:
+	@Curry
+	def f(a, b): return a + b
+	f1 = f(1)
+	f1(2) == 3
+
+	If you begin to curry by arg name - you have to call all rest arguments by name.
+	For example:
+	f1 = f(b='b')
+	f1(a='a') == 'ab'
 	"""
 	
 	def __init__(self, func, prev_pargs=None, prev_kargs=None):
 
 		self.func = func
+		self.__name__ = func.__name__ + '_curried'
+		self.__doc__ = func.__doc__
+
 		func_code = func.func_code
 
 		func_def_arg_count = 0 if func.func_defaults is None else len(func.func_defaults)
@@ -43,24 +60,42 @@ class Curry:
 			if mandatoryArg not in all_kargs:
 				return False
 
-		# Not enough args
 		return True
+
+
+	def __str__(self):
+
+		buf = 'function ' + self.__name__
+		if self.prev_pargs or self.prev_kargs:
+			buf += ' with ' + str(self.prev_pargs) + ', ' + str(self.prev_kargs)
+		return buf
 
 
 if __name__ == '__main__':
 
 	@Curry
 	def add(arg1, arg2):
+		"""Adds arg1 and arg2"""
 		return arg1 + arg2
 
+	assert add.__name__ == 'add_curried'
+	assert add.__doc__ == 'Adds arg1 and arg2'
+	assert add.__str__() == 'function add_curried'
+
 	add1 = add(1)
+
+	assert add1.__name__ == 'add_curried'
+	assert add1.__doc__ == 'Adds arg1 and arg2'
 	assert add1(2) == 3
 	assert add1(4) == 5
 
+	addb = add(arg2='b')
+	assert addb(arg1='a') == 'ab'
+	
 	@Curry
-	def func(a, b, c=3, d=4, *pargs, **kargs):
+	def func(a, b, c, d=4, *pargs, **kargs):
 		return (a, b, c, d, pargs, kargs)
 
-	func1 = func(1)
-	assert func1(2, 3, 4, 5, x=6) == (1, 2, 3, 4, (5,), {'x': 6})
-	assert func1(2) == (1, 2, 3, 4, (), {})
+	func12 = func(1, 2, x=6)
+	assert func12(3, 4, 5, y=7) == (1, 2, 3, 4, (5,), {'x': 6, 'y': 7})
+	assert func12(3) == (1, 2, 3, 4, (), {'x': 6})
